@@ -9,6 +9,7 @@ interface TimeFilterProps {
 
 const TimeFilter = ({ activePeriod, onChange }: TimeFilterProps) => {
   const periods: {label: string; value: TimeFilterPeriod}[] = [
+    { label: 'Last 24 hours', value: '1' },
     { label: 'Last 7 days', value: '7' },
     { label: 'Last 15 days', value: '15' },
     { label: 'Last 30 days', value: '30' },

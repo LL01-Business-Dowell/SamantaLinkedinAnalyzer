@@ -9,7 +9,7 @@ export interface Sale {
   productName: string;
 }
 
-export type TimeFilterPeriod = '7' | '15' | '30' | 'all';
+export type TimeFilterPeriod = '1' | '7' | '15' | '30' | 'all';
 
 export interface ChartData {
   date: string;
