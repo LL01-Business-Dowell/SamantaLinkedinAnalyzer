@@ -46,7 +46,7 @@ const Index = () => {
           0,0,false
         );
   
-        const salesData = res.data;
+        const salesData = res.data.reverse();;
 
         console.log(salesData);
         
