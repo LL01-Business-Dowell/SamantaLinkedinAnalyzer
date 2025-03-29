@@ -21,7 +21,7 @@ import { CheckCircle2, Users, Calendar, TrendingUp, CheckCheck, X } from 'lucide
 import { datacubeDataRetrieval } from '@/utils/database';
 
 const Index = () => {
-  const [period, setPeriod] = useState<TimeFilterPeriod>('7');
+  const [period, setPeriod] = useState<TimeFilterPeriod>('1');
   const [filteredSales, setFilteredSales] = useState<Sale[]>([]);
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [stats, setStats] = useState<StatCardData[]>([]);
