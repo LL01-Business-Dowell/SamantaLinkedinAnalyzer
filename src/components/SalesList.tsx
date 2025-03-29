@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Sale } from '@/types';
-import { Check, X } from 'lucide-react';
+import { Check, X, ExternalLink } from 'lucide-react';
 
 interface SalesListProps {
   sales: Sale[];
@@ -24,85 +23,101 @@ const SalesList = ({ sales }: SalesListProps) => {
     >
       <h3 className="text-lg font-medium mb-4">Recent Transactions</h3>
       
-      <div className="overflow-hidden">
-        <div className="space-y-3">
-          {sales.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-center py-6">No transactions in this period</p>
-          ) : (
-            sales.map((sale, index) => (
-              <motion.div
-                key={sale._id}
-                className="border border-gray-100 dark:border-white/10 rounded-lg overflow-hidden"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
-                <div 
-                  className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-                  onClick={() => toggleDetails(sale._id)}
-                >
-                  <div className="flex flex-col">
-                    <div className="font-medium truncate max-w-xs">{sale.client_email}</div>
-                    <div className="text-sm text-gray-500">{new Date(sale.date_time).toLocaleDateString()}</div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <div className="font-medium">{sale.price}</div>
-                      <div className="text-sm">
-                        {sale.isAgree ? (
-                          <span className="flex items-center text-green-600">
-                            <Check size={14} className="mr-1" />
-                            Agreed
-                          </span>
-                        ) : (
-                          <span className="flex items-center text-red-600">
-                            <X size={14} className="mr-1" />
-                            Declined
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-gray-400">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d={expandedId === sale._id ? "M18 15l-6-6-6 6" : "M6 9l6 6 6-6"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                
-                <AnimatePresence>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-50 dark:bg-white/5 text-left">
+              <th className="p-3 border-b border-gray-100 dark:border-white/10">Sl No.</th>
+              <th className="p-3 border-b border-gray-100 dark:border-white/10">Client</th>
+              <th className="p-3 border-b border-gray-100 dark:border-white/10">Date</th>
+              <th className="p-3 border-b border-gray-100 dark:border-white/10">Price</th>
+              <th className="p-3 border-b border-gray-100 dark:border-white/10">Status</th>
+              <th className="p-3 border-b border-gray-100 dark:border-white/10">LinkedIn</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sales.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-gray-500 dark:text-gray-400 text-center py-6">No transactions in this period</td>
+              </tr>
+            ) : (
+              sales.map((sale, index) => (
+                <>
+                  <motion.tr
+                    key={`row-${sale._id}`}
+                    className="border-b border-gray-100 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <td className="p-3">{index + 1}</td>
+                    <td className="p-3">
+                      <div className="font-medium truncate max-w-xs">{sale.client_email}</div>
+                    </td>
+                    <td className="p-3">
+                      <div className="text-sm">{new Date(sale.date_time).toLocaleDateString()}</div>
+                    </td>
+                    <td className="p-3 font-medium">{sale.price}</td>
+                    <td className="p-3">
+                      {sale.isAgree ? (
+                        <span className="flex items-center text-green-600">
+                          <Check size={14} className="mr-1" />
+                          Agreed
+                        </span>
+                      ) : (
+                        <span className="flex items-center text-red-600">
+                          <X size={14} className="mr-1" />
+                          Declined
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3">
+                      <a 
+                        href={sale.client_linkedin_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                      >
+                        <ExternalLink size={14} className="mr-1" />
+                        View LinkedIn
+                      </a>
+                    </td>
+                  </motion.tr>
                   {expandedId === sale._id && (
-                    <motion.div 
-                      className="bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm border-t border-gray-100 dark:border-white/10"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
+                    <motion.tr
+                      key={`details-${sale._id}`}
+                      className="bg-gray-50 dark:bg-white/5"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-gray-500 mb-1">Product</p>
-                          <p>{sale.productName}</p>
+                      <td colSpan={6} className="p-3 text-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-gray-500 mb-1">Product</p>
+                            <p>{sale.productName}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500 mb-1">LinkedIn Profile URL</p>
+                            <a 
+                              href={sale.client_linkedin_link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 dark:text-blue-400 hover:underline break-all"
+                            >
+                              {sale.client_linkedin_link}
+                            </a>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-gray-500 mb-1">LinkedIn Profile</p>
-                          <a 
-                            href={sale.client_linkedin_link} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-blue-600 dark:text-blue-400 hover:underline break-all"
-                          >
-                            {sale.client_linkedin_link}
-                          </a>
-                        </div>
-                      </div>
-                    </motion.div>
+                      </td>
+                    </motion.tr>
                   )}
-                </AnimatePresence>
-              </motion.div>
-            ))
-          )}
-        </div>
+                </>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </motion.div>
   );
